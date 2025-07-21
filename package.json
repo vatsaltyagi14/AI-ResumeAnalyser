@@ -9,7 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "generative-ai": "^0.1.4",
     "lucide-react": "^0.525.0",
+    "mongoose": "^8.16.4",
     "next": "15.4.2",
     "next-auth": "^4.24.11",
     "pdf-parse": "^1.1.1",
