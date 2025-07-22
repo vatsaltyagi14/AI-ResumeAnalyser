@@ -1,4 +1,11 @@
-import UploadForm from "@/components/UploadForm";
+'use client'; 
+import dynamic from 'next/dynamic';
+
+// Dynamically importign uploadform cos usme pdfjs  hai that needs to be after the browser is rendered
+const UploadForm = dynamic(() => import('@/components/UploadForm'), {
+  ssr: false,
+  loading: () => <p>Loading form...</p> // Optional loading state
+});
 
 const DashboardPage = () => {
   return (
