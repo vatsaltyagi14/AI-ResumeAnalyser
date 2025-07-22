@@ -12,16 +12,14 @@ const Navbar = () => {
       <div className="container mx-auto flex justify-between items-center">
         <Link
           href="/"
-          className="text-2xl font-bold bg-black text-transparent bg-clip-text"
+          className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text"
         >
           Resumify
         </Link>
         <div>
           {status === 'loading' ? (
-            // loading gng
             <div className="h-10 w-24 bg-slate-200 rounded-lg animate-pulse"></div>
           ) : status === 'authenticated' ? (
-            // if the user is logged in
             <div className="flex items-center gap-4">
               <button
                 onClick={() => signOut()}
@@ -40,7 +38,6 @@ const Navbar = () => {
               </Link>
             </div>
           ) : (
-            // Show this if the user is not logged in
             <button
               onClick={() => signIn('google')}
               className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105"

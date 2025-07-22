@@ -1,20 +1,52 @@
 'use client';
 import { useState } from 'react';
+import * as pdfjs from 'pdfjs-dist';
+
+// zaroori line h iske liye
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const UploadForm = () => {
-
-    // yaha pe karrha mai state mgmt
-  const [file, setFile] = useState(null); //holds the actual resume file
+  const [file, setFile] = useState(null); // ye raw pdf hold karta hai
+  const [fileName, setFileName] = useState(''); 
   const [jobDescription, setJobDescription] = useState('');
-  const [isLoading, setIsLoading] = useState(false); //when waiting for a response from ai gang
+  const [isLoading, setIsLoading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState(null);
   const [error, setError] = useState(null);
 
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setFileName(selectedFile.name);
+    }
+  };
 
-    //yaha pe maine logic
+  // Helper function to extract text from PDF
+  const getTextFromPdf = async (file) => {
+    const reader = new FileReader();
+    return new Promise((resolve, reject) => {
+      reader.onload = async (event) => {
+        try {
+          const typedArray = new Uint8Array(event.target.result);
+          const pdf = await pdfjs.getDocument(typedArray).promise;
+          let text = '';
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const content = await page.getTextContent();
+            text += content.items.map(item => item.str).join(' ');
+          }
+          resolve(text);
+        } catch (err) {
+          reject(err);
+        }
+      };
+      reader.onerror = (err) => reject(err);
+      reader.readAsArrayBuffer(file);
+    });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); //default page reload rokta
+    e.preventDefault();
     if (!file) {
       setError('Please select a resume file.');
       return;
@@ -24,14 +56,19 @@ const UploadForm = () => {
     setError(null);
     setAnalysisResult(null);
 
-    const formData = new FormData(); //api ko bhejne keliye obj lagta jo //standard way hai bas append krdia is required object ke saath kaam ki cheezo ko
-    formData.append('resume', file); //api ko poori file bhejrha hu
-    formData.append('jobDescription', jobDescription);
-
     try {
+      // 1. Parse PDF on the client
+      const resumeText = await getTextFromPdf(file);
+
+      // 2. Send the extracted text to the API
       const response = await fetch('/api/analyze', {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fileName: fileName,
+          resumeText: resumeText,
+          jobDescription: jobDescription,
+        }),
       });
 
       const data = await response.json();
@@ -48,9 +85,6 @@ const UploadForm = () => {
     }
   };
 
-
-  //yaha pe bas html tags hai ab
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       {/* Form Section */}
@@ -64,7 +98,7 @@ const UploadForm = () => {
               type="file"
               id="resume"
               accept=".pdf"
-              onChange={(e) => setFile(e.target.files[0])}
+              onChange={handleFileChange}
               className="w-full p-2 border border-slate-300 rounded"
               required
             />
@@ -98,7 +132,6 @@ const UploadForm = () => {
         {error && <p className="text-red-500">{error}</p>}
         {analysisResult && (
           <div className="space-y-4">
-            {/* Conditional rendering based on analysis type */}
             {analysisResult.atsScore !== undefined && (
               <div>
                 <h3 className="text-lg font-semibold">General Analysis</h3>

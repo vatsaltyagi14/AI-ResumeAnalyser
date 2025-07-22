@@ -10,6 +10,11 @@ const nextConfig = {
       },
     ],
   },
+  // pdfjs-dist library keliye
+  webpack: (config) => {
+    config.resolve.alias.canvas = false;
+    return config;
+  },
 };
 
 export default nextConfig;
