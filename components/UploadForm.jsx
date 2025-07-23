@@ -7,15 +7,15 @@ import { Upload, FileText } from 'lucide-react';
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const UploadForm = () => {
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState(null); //stores raw file
   const [fileName, setFileName] = useState('');
   const [jobDescription, setJobDescription] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); //fetch hote hue wait krte h jab 
   const [analysisResult, setAnalysisResult] = useState(null);
   const [error, setError] = useState(null);
 
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
+    const selectedFile = e.target.files[0]; //takes the first file and updates file and filename
     if (selectedFile) {
       setFile(selectedFile);
       setFileName(selectedFile.name);
@@ -24,12 +24,12 @@ const UploadForm = () => {
 
 
   const getTextFromPdf = async (file) => {
-    const reader = new FileReader();
-    return new Promise((resolve, reject) => {
+    const reader = new FileReader(); //file reader browser ka scene hota hai, async treeke se reads files 
+    return new Promise((resolve, reject) => { //thatsy promise cos async
       reader.onload = async (event) => {
         try {
-          const typedArray = new Uint8Array(event.target.result);
-          const pdf = await pdfjs.getDocument(typedArray).promise;
+          const typedArray = new Uint8Array(event.target.result); //pdf ko bin (array of 8bit unsigned ints rakhta h ye)
+          const pdf = await pdfjs.getDocument(typedArray).promise; //parse krna
           let text = '';
           for (let i = 1; i <= pdf.numPages; i++) {
             const page = await pdf.getPage(i);
@@ -47,7 +47,7 @@ const UploadForm = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); //stops page from reloading
     if (!file) {
       setError('Please select a resume file.');
       return;

@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server'; //api responses keliye
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]/route';
 import connectDB from '@/config/database';
@@ -10,8 +10,8 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 export async function POST(request) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session) {
-      return new NextResponse(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
+    if (!session) { //checkd if logged in
+      return new NextResponse(JSON.stringify({ message: 'Unauthorized' }), { status: 401 }); //bhejne keliye nextreponse use
     }
 
     const { fileName, resumeText, jobDescription } = await request.json();
@@ -38,7 +38,7 @@ export async function POST(request) {
 
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
-      generationConfig: { responseMimeType: "application/json" },
+      generationConfig: { responseMimeType: "application/json" }, //json format ka reponse chahiye
     });
 
     const result = await model.generateContent(prompt);

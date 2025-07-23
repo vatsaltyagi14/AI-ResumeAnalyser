@@ -1,10 +1,11 @@
-'use client'; 
-import dynamic from 'next/dynamic';
+'use client';
+import dynamic from 'next/dynamic'; //dynamic load keliye
+import PastAnalyses from '@/components/PastAnalyses'; 
 
-// Dynamically importign uploadform cos usme pdfjs  hai that needs to be after the browser is rendered
+// Dynamically importuploadform ssr off hai toh client pe hoga, this was used for pdfjs to work as it requires bropwseronly apis
 const UploadForm = dynamic(() => import('@/components/UploadForm'), {
   ssr: false,
-  loading: () => <p>Loading form...</p> // Optional loading state
+  loading: () => <p>Loading form...</p>
 });
 
 const DashboardPage = () => {
@@ -14,8 +15,13 @@ const DashboardPage = () => {
       <p className="text-slate-600 mb-8">Upload your resume to get started.</p>
       
       <UploadForm />
+
+      <hr className="my-8" /> 
+
+      <PastAnalyses />
     </div>
   );
 };
 
 export default DashboardPage;
+
