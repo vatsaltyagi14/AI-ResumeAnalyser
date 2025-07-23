@@ -2,6 +2,12 @@
 
 Resumify is a full-stack web application designed to help job seekers get instant, AI-powered feedback on their resumes. Users can upload their resume to receive a detailed analysis, an ATS (Applicant Tracking System) compatibility score, or compare it directly against a specific job description to identify keyword gaps and improve their chances of landing an interview.
 
+## 🚀 Live Demo
+
+You can view the live, deployed version of the project here:
+
+[**https://ai-resume-analyser-delta.vercel.app/**](https://ai-resume-analyser-delta.vercel.app/)
+
 ## **Features**
 
 * **Secure Google Authentication:** Users can sign in securely with their Google account using NextAuth.js.  
